@@ -1,6 +1,8 @@
 'use strict'
 const ipc = require('electron').ipcRenderer
 
+const platform = process.platform;
+
 function isKeep () {
   return window.location.hostname === 'keep.google.com'
 }
@@ -12,7 +14,7 @@ function injectCss (rule) {
 function handleDOMLoaded () {
   if (!isKeep()) return
 
-  if (process.platform === 'darwin') {
+  if (platform === 'darwin' || platform === 'linux') {
     injectCss(`
       #ognwrapper {
         -webkit-app-region: drag;
@@ -26,16 +28,16 @@ function handleDOMLoaded () {
         -webkit-app-region: no-drag;
       }
     `)
-
-    injectCss(`
-      #ognwrapper > :first-child > :nth-child(2) {
-        padding-left: 75px;
-      }
-    `)
   }
 
   injectCss(`
     ::-webkit-scrollbar {
+      display: none !important;
+    }
+  `)
+
+  injectCss(`
+    #ognwrapper .gb_1d {
       display: none !important;
     }
   `)
